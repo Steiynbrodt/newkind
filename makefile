@@ -1,18 +1,20 @@
 #
 # Makefile for Elite - The New Kind.
 #
-CC   = gcc
-WRES = windres
+CC   ?= gcc
+WRES ?= windres
 
-# Pfad zu deinem Allegro-5-SDK (ANPASSEN, aber Struktur so lassen)
-ALLEGRO_DIR = C:\Daten\Neuer Ordner\!Desktop\Allegro522_MinGW5303.tar\Allegro522_MinGW5303
-ALLEGRO_INC = "$(ALLEGRO_DIR)/include"
-ALLEGRO_LIB = "$(ALLEGRO_DIR)/lib"
+# Location of the Allegro 5 SDK. The defaults match a standard MSYS2/
+# MinGW-w64 installation on 64-bit Windows 10 (installed to C:\msys64).
+# Override ALLEGRO_DIR if you installed the Allegro SDK elsewhere.
+ALLEGRO_DIR ?= C:/msys64/mingw64
+ALLEGRO_INC ?= "$(ALLEGRO_DIR)/include"
+ALLEGRO_LIB ?= "$(ALLEGRO_DIR)/lib"
 
-CFLAGS  = -O2 -Wall -I$(ALLEGRO_INC)
-LDFLAGS = -L$(ALLEGRO_LIB)
+CFLAGS  += -O2 -Wall -I$(ALLEGRO_INC)
+LDFLAGS += -L$(ALLEGRO_LIB)
 
-# wir linken gegen die Monolith-Lib
+# Link against the Allegro 5 monolith library plus the standard Win32 libs.
 LIBS    = -mwindows \
           -lallegro_monolith \
           -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lole32 -lwinmm
@@ -29,7 +31,12 @@ newkind.exe: $(OBJS)
 	$(CC) $(LDFLAGS) -o newkind.exe $(OBJS) $(LIBS)
 
 nkres.o: nkres.rc
-	$(WRES) nkres.rc nkres.o
+        $(WRES) nkres.rc nkres.o
+
+.PHONY: clean
+
+clean:
+	$(RM) $(OBJS) newkind.exe
 
 
 alg_gfx.o: alg_gfx.c alg_data.h config.h elite.h planet.h gfx.h
