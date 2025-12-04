@@ -18,7 +18,6 @@
  
  
 #include <stdlib.h>
-#include "allegro.h"
 
 #include "random.h"
 

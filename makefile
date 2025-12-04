@@ -1,23 +1,32 @@
 #
 # Makefile for Elite - The New Kind.
 #
+CC   = gcc
+WRES = windres
 
-CC	=	gcc
-WRES	=	windres
+# Pfad zu deinem Allegro-5-SDK (ANPASSEN, aber Struktur so lassen)
+ALLEGRO_DIR = C:\Daten\Neuer Ordner\!Desktop\Allegro522_MinGW5303.tar\Allegro522_MinGW5303
+ALLEGRO_INC = "$(ALLEGRO_DIR)/include"
+ALLEGRO_LIB = "$(ALLEGRO_DIR)/lib"
 
-LIBS	=	-s -mwindows -lalleg_s -lkernel32 -lgdi32 -lcomdlg32 -luser32 -lole32 -lddraw -ldxguid -lwinmm -ldsound -ldinput
-CFLAGS	=	-mpentium -O2 -funroll-loops -Wall -DALLEGRO_STATICLINK
+CFLAGS  = -O2 -Wall -I$(ALLEGRO_INC)
+LDFLAGS = -L$(ALLEGRO_LIB)
 
-OBJS	= alg_gfx.o alg_main.o docked.o elite.o\
-	intro.o planet.o shipdata.o shipface.o sound.o space.o\
-	swat.o threed.o vector.o random.o trade.o options.o \
-	stars.o missions.o nkres.o pilot.o file.o keyboard.o
+# wir linken gegen die Monolith-Lib
+LIBS    = -mwindows \
+          -lallegro_monolith \
+          -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lole32 -lwinmm
+
+OBJS    = alg_gfx.o alg_main.o docked.o elite.o \
+          intro.o planet.o shipdata.o shipface.o sound.o space.o \
+          swat.o threed.o vector.o random.o trade.o options.o \
+          stars.o missions.o nkres.o pilot.o file.o keyboard.o
 
 .c.o:
-	$(CC) $(CFLAGS) -c $<
+	$(CC) $(CFLAGS) -c $< -o $@
 
 newkind.exe: $(OBJS)
-	$(CC) -o newkind.exe $(OBJS) $(LIBS)
+	$(CC) $(LDFLAGS) -o newkind.exe $(OBJS) $(LIBS)
 
 nkres.o: nkres.rc
 	$(WRES) nkres.rc nkres.o
@@ -70,4 +79,3 @@ pilot.o: pilot.c pilot.h config.h elite.h gfx.h vector.h space.h main.h
 file.o: file.c file.h config.h elite.h
 
 keyboard.o: keyboard.c keyboard.h
-
