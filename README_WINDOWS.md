@@ -9,9 +9,9 @@ These steps target a clean Windows 10 install using the MSYS2 toolchain and the 
    pacman -Syu
    ```
    Restart the shell if prompted, then run `pacman -Syu` again until no more updates are offered.
-3. Install the toolchain and Allegro 5 monolith package:
+3. Install the toolchain, pkg-config, and the Allegro 5 monolith package:
    ```bash
-   pacman -S --needed mingw-w64-x86_64-gcc mingw-w64-x86_64-make mingw-w64-x86_64-allegro
+   pacman -S --needed mingw-w64-x86_64-gcc mingw-w64-x86_64-make mingw-w64-x86_64-pkg-config mingw-w64-x86_64-allegro
    ```
 
 ## Building
@@ -20,10 +20,7 @@ These steps target a clean Windows 10 install using the MSYS2 toolchain and the 
    ```bash
    mingw32-make
    ```
-   The default `makefile` looks for Allegro headers and libraries under `C:/msys64/mingw64`. If you installed MSYS2 elsewhere, override the location:
-   ```bash
-   mingw32-make ALLEGRO_DIR=C:/path/to/your/msys64/mingw64
-   ```
+   The makefile asks `pkg-config` for Allegro 5 compiler and linker flags (using the `allegro_monolith-5` package). If you installed Allegro under a different prefix, point `PKG_CONFIG_PATH` at your `.pc` files before running `mingw32-make`.
 3. The build should produce `newkind.exe` in the repository root.
 
 ## Running

@@ -4,20 +4,13 @@
 CC   ?= gcc
 WRES ?= windres
 
-# Location of the Allegro 5 SDK. The defaults match a standard MSYS2/
-# MinGW-w64 installation on 64-bit Windows 10 (installed to C:\msys64).
-# Override ALLEGRO_DIR if you installed the Allegro SDK elsewhere.
-ALLEGRO_DIR ?= C:/msys64/mingw64
-ALLEGRO_INC ?= "$(ALLEGRO_DIR)/include"
-ALLEGRO_LIB ?= "$(ALLEGRO_DIR)/lib"
+# Allegro 5 configuration (expects the monolith build available via pkg-config).
+ALLEGRO_PKG ?= allegro_monolith-5
 
-CFLAGS  += -O2 -Wall -I$(ALLEGRO_INC)
-LDFLAGS += -L$(ALLEGRO_LIB)
-
-# Link against the Allegro 5 monolith library plus the standard Win32 libs.
-LIBS    = -mwindows \
-          -lallegro_monolith \
-          -lkernel32 -luser32 -lgdi32 -lcomdlg32 -lole32 -lwinmm
+# Ask pkg-config for include paths and libraries so the build works with the
+# MSYS2/MinGW-w64 Allegro 5 packages without hard-coding install paths.
+CFLAGS  += -O2 -Wall $(shell pkg-config --cflags $(ALLEGRO_PKG))
+LIBS    = -mwindows $(shell pkg-config --libs $(ALLEGRO_PKG))
 
 OBJS    = alg_gfx.o alg_main.o docked.o elite.o \
           intro.o planet.o shipdata.o shipface.o sound.o space.o \
